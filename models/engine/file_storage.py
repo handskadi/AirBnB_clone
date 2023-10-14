@@ -29,6 +29,14 @@ class FileStorage:
         classes = {"BaseModel": BaseModel}
         return classes
 
+    def attrs(self):
+        """Returns the valid attributes and their types for classname"""
+        attributes = {
+                "BaseModel":
+                            {"id": str,
+                            "created_at": datetime.datetime,
+                            "updated_at": datetime.datetime}
+        }
     def reload(self):
         if not os.path.isfile(FileStorage.__file_path):
             return
