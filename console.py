@@ -17,6 +17,16 @@ class HBNBCommand(cmd.Cmd):
         print() # to handle newline 
         return True
 
+    def do_create(self, cln):
+        """ <create> will create new instance """
+        if cln == "" or cln is None:
+            print("** class name missing **")
+        elif cln not in storage.classes():
+            print("** class doesn't exist **")
+        else:
+            new_instance = storage.classes()[cln]()
+            new_instance.save()
+            print(new_instance.id)
 
 if __name__ == '__main__':
         HBNBCommand().cmdloop()
