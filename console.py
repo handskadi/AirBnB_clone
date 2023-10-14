@@ -6,10 +6,10 @@ from models import storage
 import json
 
 class HBNBCommand(cmd.Cmd):
-    prompt = "(mkbnb) "
+    prompt = "(hbnb)"
 
     def do_quit(self, line):
-        """ type (quit) to exis the program """
+        """ Type (quit) to exit the program """
         return True
 
     def do_EOF(self, line):
