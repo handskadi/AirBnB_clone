@@ -5,6 +5,7 @@ from models.base_model import BaseModel
 from models import storage
 import json
 import os
+import re
 
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
@@ -98,7 +99,50 @@ class HBNBCommand(cmd.Cmd):
             os.system('cls')
         else:
             print("Clear screen not supported on this operating system")
+    
+    def do_update(self, cln):
+        """Update an instance"""
+        if cln == "" or cln is None:
+            print("** class name missing **")
+            return
 
+        reg_exp = r'^(\S+)(?:\s(\S+)(?:\s(\S+)(?:\s((?:"[^"]*")|(?:(\S)+)))?)?)?'
+        match = re.search(reg_exp, cln)
+        clname = match.group(1)
+        uuid = match.group(2)
+        attr = match.group(3)
+        val = match.group(4)
+
+        if not match:
+            print("** class name missing **")
+        elif clname not in storage.classes():
+            print("** class doesn't exist **")
+        else:
+            inst_key = "{}.{}".format(clname, uuid)
+            if inst_key not in storage.all():
+                print("** no instance found **")
+            elif not attr:
+                print("** attribute name missing **")
+            elif not val:
+                print("** value missing **")
+            else:
+                do_casting = None
+                if not re.search('^".*"$', val):
+                    if '.' in val:
+                        do_casting = float
+                    else:
+                        do_casting = int
+                else:
+                    val = val.replace('"', '')
+                attrs = storage.attrs()[clname]
+                if attr in attrs:
+                    val = attrs[attr](val)
+                elif do_casting:
+                    try:
+                        val = cast(val)
+                    except ValueError:
+                        pass
+                setattr(storage.all()[inst_key], attr, val)
 
 if __name__ == '__main__':
         HBNBCommand().cmdloop()
