@@ -11,6 +11,59 @@ import re
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
 
+    def default(self, cln):
+        """Know commad is ntg matches."""
+        self._precmd(cln)
+
+    def _precmd(self, cln):
+        """Prepare Commands to excute <class>.syn()."""
+        alikes = re.search(r"^(\w*)\.(\w+)(?:\(([^)]*)\))$", cln)
+        if not alikes:
+            return cln
+        classname = alikes.group(1)
+        method = alikes.group(2)
+        args = alikes.group(3)
+        valid_uid_and_args = re.search('^"([^"]*)"(?:, (.*))?$', args)
+        if valid_uid_and_args:
+            uid = valid_uid_and_args.group(1)
+            attr_or_dict = valid_uid_and_args.group(2)
+        else:
+            uid = args
+            attr_or_dict = False
+
+        attr_and_value = ""
+        if method == "update" and attr_or_dict:
+            valid_dict = re.search('^({.*})$', attr_or_dict)
+            if valid_dict:
+                self.update_dict(classname, uid, valid_dict.group(1))
+                return ""
+            valid_attr_and_value = re.search(
+                    '^(?:"([^"]*)")?(?:, (.*))?$', attr_or_dict)
+            if valid_attr_and_value:
+                attr_and_value = (valid_attr_and_value.group(
+                    1) or "") + " " + (valid_attr_and_value.group(2) or "")
+        command = method + " " + classname + " " + uid + " " + attr_and_value
+        self.onecmd(command)
+        return command
+
+    def update_dict(self, classname, uid, s_dict):
+        """Method for Updtae dic."""
+        s = s_dict.replace("'", '"')
+        d = json.loads(s)
+        if not classname:
+            print("** class name missing **")
+        elif classname not in storage.classes():
+            print("** class doesn't exist **")
+        elif uid is None:
+            print("** instance id missing **")
+        else:
+            attributes = storage.attributes()[classname]
+            for attribute, value in d.items():
+                if attribute in attributes:
+                    value = attributes[attribute](value)
+                    setattr(storage.all()[key], attribute, value)
+            storage.all()[key].save()
+
     def emptyline(self):
         """Nothing will happen in an Emptyline by hitting Enter."""
         pass
