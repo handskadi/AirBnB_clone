@@ -136,6 +136,7 @@ class HBNBCommand(cmd.Cmd):
                     except ValueError:
                         pass
                 setattr(storage.all()[inst_key], attribute, value)
+                storage.all()[inst_key].save()
 
 
 if __name__ == '__main__':
