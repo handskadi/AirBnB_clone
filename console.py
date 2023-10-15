@@ -20,8 +20,8 @@ class HBNBCommand(cmd.Cmd):
         alikes = re.search(r"^(\w*)\.(\w+)(?:\(([^)]*)\))$", cln)
         if not alikes:
             return cln
-        classname = alikes.group(1)
-        method = alikes.group(2)
+        clname = alikes.group(1)
+        func = alikes.group(2)
         args = alikes.group(3)
         valid_uid_and_args = re.search('^"([^"]*)"(?:, (.*))?$', args)
         if valid_uid_and_args:
@@ -32,32 +32,32 @@ class HBNBCommand(cmd.Cmd):
             attr_or_dict = False
 
         attr_and_value = ""
-        if method == "update" and attr_or_dict:
+        if func == "update" and attr_or_dict:
             valid_dict = re.search('^({.*})$', attr_or_dict)
             if valid_dict:
-                self.update_dict(classname, uid, valid_dict.group(1))
+                self.update_dict(clname, uid, valid_dict.group(1))
                 return ""
             valid_attr_and_value = re.search(
                     '^(?:"([^"]*)")?(?:, (.*))?$', attr_or_dict)
             if valid_attr_and_value:
                 attr_and_value = (valid_attr_and_value.group(
                     1) or "") + " " + (valid_attr_and_value.group(2) or "")
-        command = method + " " + classname + " " + uid + " " + attr_and_value
+        command = func + " " + clname + " " + uid + " " + attr_and_value
         self.onecmd(command)
         return command
 
-    def update_dict(self, classname, uid, s_dict):
+    def update_dict(self, clname, uid, string_dict):
         """Method for Updtae dic."""
-        s = s_dict.replace("'", '"')
-        d = json.loads(s)
-        if not classname:
+        stng = string_dict.replace("'", '"')
+        d = json.loads(stng)
+        if not clname:
             print("** class name missing **")
-        elif classname not in storage.classes():
+        elif clname not in storage.classes():
             print("** class doesn't exist **")
         elif uid is None:
             print("** instance id missing **")
         else:
-            attributes = storage.attributes()[classname]
+            attributes = storage.attributes()[clname]
             for attribute, value in d.items():
                 if attribute in attributes:
                     value = attributes[attribute](value)
