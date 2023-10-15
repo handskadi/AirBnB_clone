@@ -108,41 +108,43 @@ class HBNBCommand(cmd.Cmd):
 
         reg_exp = r'^(\S+)(?:\s(\S+)(?:\s(\S+)(?:\s((?:"[^"]*")|(?:(\S)+)))?)?)?'
         match = re.search(reg_exp, cln)
-        clname = match.group(1)
-        uuid = match.group(2)
-        attr = match.group(3)
-        val = match.group(4)
+        classname  = match.group(1)
+        uid = match.group(2)
+        attribute = match.group(3)
+        value = match.group(4)
 
         if not match:
             print("** class name missing **")
-        elif clname not in storage.classes():
+        elif classname  not in storage.classes():
             print("** class doesn't exist **")
+        elif uid is None:
+            print("** instance id missing **")
         else:
-            inst_key = "{}.{}".format(clname, uuid)
+            inst_key = "{}.{}".format(classname, uid)
             if inst_key not in storage.all():
                 print("** no instance found **")
-            elif not attr:
+            elif not attribute:
                 print("** attribute name missing **")
-            elif not val:
+            elif not value:
                 print("** value missing **")
             else:
-                do_casting = None
-                if not re.search('^".*"$', val):
-                    if '.' in val:
-                        do_casting = float
+                cast = None
+                if not re.search('^".*"$', value):
+                    if '.' in value:
+                        cast = float
                     else:
-                        do_casting = int
+                        cast = int
                 else:
-                    val = val.replace('"', '')
-                attrs = storage.attrs()[clname]
-                if attr in attrs:
-                    val = attrs[attr](val)
-                elif do_casting:
+                    value = value.replace('"', '')
+                attributes = storage.attributes()[classname]
+                if attribute in attributes:
+                    value = attributes[attribute](value)
+                elif cast:
                     try:
-                        val = cast(val)
+                        value = cast(value)
                     except ValueError:
                         pass
-                setattr(storage.all()[inst_key], attr, val)
+                setattr(storage.all()[inst_key], attribute, value)
 
 if __name__ == '__main__':
         HBNBCommand().cmdloop()
