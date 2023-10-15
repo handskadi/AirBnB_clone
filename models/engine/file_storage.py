@@ -31,6 +31,11 @@ class FileStorage:
         """Dic of classes & thier refs."""
         from models.base_model import BaseModel
         from models.user import User
+        from models.state import State
+        from models.city import City
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.review import Review
         classes = {
                 "BaseModel": BaseModel,
                 "User": User,
@@ -62,7 +67,7 @@ class FileStorage:
                 "City": {
                     "state_id": str,
                     "name": str
-                }
+                },
                 "Amenity": {
                     "name": str
                 },
