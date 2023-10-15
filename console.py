@@ -78,8 +78,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, cln):
         """List all rep of all ins stored in Json."""
-        if cln != "" or cln is None:
-            # TODO: ( None should be removed after tesing )
+        if cln != "":
             command = cln.split(' ')
             if command[0] not in storage.classes():
                 print("** class doesn't exist **")
@@ -90,6 +89,19 @@ class HBNBCommand(cmd.Cmd):
         else:
             inst_list = [str(obj) for k, obj in storage.all().items()]
             print(inst_list)
+
+    def do_count(self, cln):
+        """Count inst of the class."""
+        command = cln.split(' ')
+        if not command[0]:
+            print("** class name missing **")
+        elif command[0] not in storage.classes():
+            print("** class doesn't exist **")
+        else:
+            alikes = [
+                    key for key in storage.all() if key.startswith(
+                        command[0] + '.')]
+            print(len(alikes))
 
     def do_update(self, cln):
         """Update an instance."""
