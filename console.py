@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+"""Console for Airbnb Clone."""
 import cmd
 from models.base_model import BaseModel
 from models import storage
@@ -15,6 +15,7 @@ from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
+    """Class Moddule for Airbnb project."""
     prompt = "(hbnb) "
 
     def default(self, cln):
