@@ -138,7 +138,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, cln):
         """List all rep of all ins stored in Json."""
-        if cln != "" or cln is None:
+        if cln != "":
             command = cln.split(' ')
             if command[0] not in storage.classes():
                 print("** class doesn't exist **")
